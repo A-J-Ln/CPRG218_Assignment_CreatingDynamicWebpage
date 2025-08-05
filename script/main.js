@@ -111,7 +111,7 @@ async function getMovies(movieTitle) {
             results.forEach(result => {
                 if(result.status === "fulfilled" && result.value != null) {
                     const movieObj = result.value;
-                    movieObj.Title = movieObj.Title.length > 40 ? `${movieObj.Title.substring(0,40)}...` : movieObj.Title;
+                    movieObj.Title = movieObj.Title.length > 20 ? `${movieObj.Title.substring(0,20)}...` : movieObj.Title;
                     filteredMovies.push(movieObj);
                 }
             })
@@ -125,6 +125,16 @@ async function getMovies(movieTitle) {
              * Else write a for loop which will iterator over filteredMovies array 
              * and call createMovieCard() for each movie object in this array.
              */
+
+            if (filteredMovies.length == 0) {
+                createEmptyView();
+            }
+            else {
+                for (idx = 0; idx < filteredMovies.length; idx++)
+                {
+                    createMovieCard(filteredMovies[idx]);
+                }
+            }
 
         }
     } catch(exception) {
@@ -170,6 +180,13 @@ function createEmptyView() {
      * Create empty view and append it to "movieCards" section.
      */
 
+    const movieCardsSection = document.getElementById("movieCards");
+
+    const message = document.createElement("p");
+    message.className = "noresult";
+    message.textContent = "No movie found. Please search for another title.";
+    
+    movieCardsSection.appendChild(message);
 }
 
 /**
@@ -192,4 +209,31 @@ function createMovieCard(movie) {
      * Create Movie Card and append it "movieCards" section.
      */
 
+    const movieCardsSection = document.getElementById("movieCards");
+
+    // Create elements based on the required structure
+    //<article class="card"></article>
+    const article = document.createElement("article");
+    article.className = "card";
+
+    //<p class="cardTitle">movie.Title</p>
+    const title = document.createElement("p");
+    title.className = "cardTitle";
+    title.textContent = movie.Title;
+
+    //<div class="cardPosterDiv"></div>
+    const posterDiv = document.createElement("div");
+    posterDiv.className = "cardPosterDiv";
+
+    //<img class="moviePoster" src="movie.Poster" alt="Movie poster"></img>
+    const posterImg = document.createElement("img");
+    posterImg.className = "moviePoster";
+    posterImg.src = movie.Poster;
+    posterImg.alt = "Movie poster";
+
+    // Append elements
+    posterDiv.appendChild(posterImg);
+    article.appendChild(title);
+    article.appendChild(posterDiv);
+    movieCardsSection.appendChild(article);
 }
